@@ -1,0 +1,9 @@
+Phases
+1. GPT-2 with original vocab size
+2. GPT-2 with full vocab size
+3. Unknown architecture with full dataset + new vocab size
+
+Main data loop
+1. Find new playlists
+2. Get tracks and tokenize
+3. Save as .bin file
