@@ -1,17 +1,11 @@
-Phases
-1. GPT-2 with small dataset and small vocab size
-    50,257 vocab size
-    51,066,484 tokens
-2. GPT-2 with large dataset and small vocab size
-
-3. Unknown architecture with large dataset and large vocab size
-
-Main data loop
+Improve dataset
 1. Find new playlists
 2. Get tracks and tokenize
 3. Save as .bin file
 
 Training
+1. Reduce context length? 
+2. Use the tracks dataset?
 
 UI
 1. Map
