@@ -9,8 +9,13 @@ from transformers import (
 from array import array
 
 #main things to tune
-    #dataset: don't collate, get more data
+    #dataset: don't collate, get more data CHANGE MAX_CONTEXT_LENGTH
     #hyperparameters: epochs
+
+#configurable for different dataset:
+    #data folder: playlists_artists_reduced
+    #50000000 or 60 million?
+
 
 """
 DATASET
@@ -28,7 +33,7 @@ def load_int_array_from_bin_file(filename):
 def gen():
     input_ids = []
     for i in range(1000000):
-        next_ids = (load_int_array_from_bin_file(f'data/playlists_artists_reduced/{i}.bin') + [PADDING_TOKEN])[:MAX_CONTEXT_LENGTH]
+        next_ids = (load_int_array_from_bin_file(f'data/playlists_reduced/{i}.bin') + [PADDING_TOKEN])[:MAX_CONTEXT_LENGTH]
 
         if(len(input_ids) + len(next_ids) <= MAX_CONTEXT_LENGTH):
             input_ids += next_ids 
@@ -58,10 +63,10 @@ TRAINING ARGS
 """
 BATCH_SIZE = 512
 EPOCHS = 1
-NUM_TRAINING_EXAMPLES = EPOCHS*60000000//1024 #60 million tokens and 1024 max context length
+NUM_TRAINING_EXAMPLES = EPOCHS*50000000//MAX_CONTEXT_LENGTH #60 million tokens and 1024 max context length
 
 training_args = TrainingArguments(
-    output_dir="./ml/gpt2-artists",
+    output_dir="./ml/gpt2-tracks",
     overwrite_output_dir=True,
 
     num_train_epochs=EPOCHS,
