@@ -1,5 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from "react";
+import { Stage, Layer, Circle, Text } from 'react-konva';
+import dynamic from 'next/dynamic';
 
 type Location = {
   index: number;
@@ -10,12 +12,7 @@ type Location = {
 
 function LocationInfo({location} : {location : Location}){
   //The display location updates numbers iteratively
-  const [displayLocation, setDisplayLocation] = useState<Location>({
-    index: 0,
-    name: "",
-    region: "",
-    coordinates: {x : 0, y : 0}
-  });
+  const [displayLocation, setDisplayLocation] = useState<Location>(null);
 
   function smoothIncrement(target : number, current : number){
     if(Math.abs(target - current) < 1){
@@ -37,7 +34,7 @@ function LocationInfo({location} : {location : Location}){
             coordinates: {x : smoothIncrement(location.coordinates.x, prev.coordinates.x), y : smoothIncrement(location.coordinates.y, prev.coordinates.y)}
           };
         }
-        return prev;
+        return location;
       })
       
       animationId = requestAnimationFrame(animate);
@@ -59,10 +56,30 @@ function LocationInfo({location} : {location : Location}){
 }
 
 function Map(){
-  return <div className="absolute top-0 left-0 w-screen h-screen -z-10"></div>
+  const [stageDimensions, setStageDimensions] = useState({w: window.innerWidth, h : window.innerHeight})
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setStageDimensions({w: window.innerWidth, h : window.innerHeight});
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return (
+    <div className="absolute top-0 left-0 w-screen h-screen -z-10">
+      <Stage width={stageDimensions.w} height={stageDimensions.h}>
+        <Layer></Layer>
+      </Stage>
+    </div>
+  );
 }
 
 function Search(){
+  
   return (
     <div>
       <input className="border-2 border-gray-500 rounded-md p-2 w-96"></input>
@@ -75,7 +92,7 @@ export default function Home() {
   const [location, setLocation] = useState<Location>(defaultLocation);
 
   return (
-    <div className="w-screen h-screen p-24 flex flex-col justify-between items-start">
+    <div className="w-screen h-screen p-12 flex flex-col justify-between items-start">
       <LocationInfo location={location}></LocationInfo>
       <Map></Map>
       <Search></Search>
