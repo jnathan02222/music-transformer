@@ -1,6 +1,6 @@
 
-import ScrollingCanvas from "./ScrollingCanvas";
 import { useState, useEffect } from "react";
+import { Stage, Layer, Circle, Text } from 'react-konva';
 
 export default function Map() {
   const [stageDimensions, setStageDimensions] = useState({ w: window.innerWidth, h: window.innerHeight });
@@ -18,8 +18,17 @@ export default function Map() {
   }, []);
 
   return (
-    <div className="absolute top-0 left-0 w-screen h-screen -z-10">
-      <ScrollingCanvas stageDimensions={stageDimensions}></ScrollingCanvas>
+    <div className="absolute top-0 left-0 w-screen h-screen">
+      <Stage width={stageDimensions.w} height={stageDimensions.h} draggable={true}>
+        <Layer>
+          <Circle
+          radius={100}
+          x={0}           
+          y={0}     
+          fill='red'
+          />
+        </Layer>
+      </Stage>
     </div>
   );
 }
