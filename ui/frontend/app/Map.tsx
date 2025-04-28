@@ -1,12 +1,17 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Stage, Layer, Circle, Text } from 'react-konva';
+import type { IFrame } from 'konva/lib/types';
+
 import Konva from 'konva';
+type Point = {x: number, y: number};
 
 export default function Map() {
   const [stageDimensions, setStageDimensions] = useState({ w: window.innerWidth, h: window.innerHeight });
   const [stageScale, setStageScale] = useState({x: 1, y: 1});
-  const [cameraPosition, setCameraPosition] = useState({x: 0, y: 0});
+  const stageRef = useRef<Konva.Stage | null>(null);
+  const layerRef = useRef<Konva.Layer | null>(null);
+  const [cameraTarget, setCameraTarget] = useState<Point | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -51,15 +56,39 @@ export default function Map() {
     // setCameraPosition(newPos);
   }
 
+
+
+  useEffect(()=>{
+    //A Konva animation that gradually moves towards the camera target (offsets all children of the layer)
+    function animate(frame : IFrame | undefined){
+      console.log(cameraTarget)
+      if(!frame || !cameraTarget){
+        return;
+      }
+      if(layerRef.current){
+        const shapes = layerRef.current.getChildren();
+        for (const shape of shapes) {
+          
+        } 
+      }
+    }
+
+    const anim = new Konva.Animation(animate, layerRef.current);
+    anim.start();
+    return ()=>{anim.stop()}
+
+  },[cameraTarget])
+
   return (
     <div className="absolute top-0 left-0 w-screen h-screen">
-      <Stage  scale={stageScale}  width={stageDimensions.w} height={stageDimensions.h} draggable={true} onWheel={onWheel}>
-        <Layer>
+      <Stage ref={stageRef} scale={stageScale}  width={stageDimensions.w} height={stageDimensions.h} draggable={true} onWheel={onWheel}>
+        <Layer ref={layerRef}>
           <Circle
           radius={100}
-          x={0}           
-          y={0}     
+          x={500}           
+          y={500}     
           fill='red'
+          onClick={()=>{setCameraTarget({x: 500, y: 500})}}
           />
         </Layer>
       </Stage>
